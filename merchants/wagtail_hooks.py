@@ -5,20 +5,53 @@ from wagtail.admin.viewsets.model import ModelViewSet
 
 from .models import Merchant
 
-
 class MerchantViewSet(ModelViewSet):
-    prefix = "merchant"
     model = Merchant
     icon = "user"
     add_to_admin_menu = False
 
-    list_display = ["name", "license_no", "contact_name", "contact_phone", "status", "created_at"]
-    list_filter = ["status", "created_at"]
-    search_fields = ["name", "license_no", "contact_name", "contact_phone"]
-    ordering = ["-created_at"]
+    list_display = [
+        "name",
+        "id",
+        "account",
+        "region",
+        "auth_type",
+        "risk_level",
+        "last_eval_time",
+        "status",
+        "channel",
+        "can_apply_accounts",
+        "applied_accounts",
+        "utilization_rate",
+    ]
 
-    # 如果模型没有 panels/edit_handler，必须声明表单字段
-    form_fields = ["name", "license_no", "contact_name", "contact_phone", "status"]
+    list_filter = [
+        "auth_type",
+        "status",
+        "risk_level",
+        "channel",
+        ("register_time", {"label": "注册时间"}),  # 日期范围过滤
+        "region",
+        ("parent", {"label": "所属上级"}),
+    ]
+
+    search_fields = ["name", "merchant_code", "account", "region", "parent__name", "parent__merchant_code"]
+
+    ordering = ["-register_time"]
+
+# class MerchantViewSet(ModelViewSet):
+#     prefix = "merchant"
+#     model = Merchant
+#     icon = "user"
+#     add_to_admin_menu = False
+#
+#     list_display = ["name", "license_no", "contact_name", "contact_phone", "status", "created_at"]
+#     list_filter = ["status", "created_at"]
+#     search_fields = ["name", "license_no", "contact_name", "contact_phone"]
+#     ordering = ["-created_at"]
+#
+#     # 如果模型没有 panels/edit_handler，必须声明表单字段
+#     form_fields = ["name", "license_no", "contact_name", "contact_phone", "status"]
 
 @hooks.register("register_admin_viewset")
 def register_merchant_viewset():
