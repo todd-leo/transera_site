@@ -3,6 +3,7 @@ from wagtail import hooks
 from wagtail.admin.menu import Menu, AdminOnlyMenuItem, SubmenuMenuItem
 from wagtail.admin.viewsets.model import ModelViewSet
 
+from .filter import MerchantFilter
 from .models import Merchant
 
 class MerchantViewSet(ModelViewSet):
@@ -31,21 +32,13 @@ class MerchantViewSet(ModelViewSet):
         "comments"
     ]
 
-    list_filter = [
-        "auth_type",
-        "status",
-        "risk_level",
-        "distributor",
-        # ("register_time", {"label": "注册时间"}),  # 日期范围过滤
-        "region"
-        # ("parent", {"label": "所属上级"}),
-    ]
-
     search_fields = ["name", "id", "account", "region", "parent__name", "parent__merchant_code"]
 
     ordering = ["-register_time"]
 
     exclude_form_fields = []
+
+    filterset_class = MerchantFilter
 
 @hooks.register("register_admin_viewset")
 def register_merchant_viewset():
