@@ -5,20 +5,47 @@ from wagtail.admin.viewsets.model import ModelViewSet
 
 from .models import Merchant
 
-
 class MerchantViewSet(ModelViewSet):
-    prefix = "merchant"
     model = Merchant
     icon = "user"
     add_to_admin_menu = False
 
-    list_display = ["name", "license_no", "contact_name", "contact_phone", "status", "created_at"]
-    list_filter = ["status", "created_at"]
-    search_fields = ["name", "license_no", "contact_name", "contact_phone"]
-    ordering = ["-created_at"]
+    list_display = [
+        "id",
+        "name",
+        "auth_type",
+        "account",
+        "region",
+        "status",
+        "risk_level",
+        "parent",
+        "region",
+        "register_time",
+        "last_eval_time",
+        "distributor",
+        "last_eval_time",
+        "distributor",
+        "accounts_apply_limit",
+        "accounts_applied",
+        "utilization_rate",
+        "comments"
+    ]
 
-    # 如果模型没有 panels/edit_handler，必须声明表单字段
-    form_fields = ["name", "license_no", "contact_name", "contact_phone", "status"]
+    list_filter = [
+        "auth_type",
+        "status",
+        "risk_level",
+        "distributor",
+        # ("register_time", {"label": "注册时间"}),  # 日期范围过滤
+        "region"
+        # ("parent", {"label": "所属上级"}),
+    ]
+
+    search_fields = ["name", "id", "account", "region", "parent__name", "parent__merchant_code"]
+
+    ordering = ["-register_time"]
+
+    exclude_form_fields = []
 
 @hooks.register("register_admin_viewset")
 def register_merchant_viewset():
@@ -37,8 +64,7 @@ def register_merchant_group():
 
 @hooks.register("register_merchant_menu_item")
 def register_merchant_manage_item():
-    # index_url = reverse(MerchantViewSet.get_url_name("index"))
-    index_url = reverse(f"{MerchantViewSet.prefix}:index")
+    index_url = reverse(MerchantViewSet().get_url_name("index"))
     return AdminOnlyMenuItem(
         label="商户管理",
         url=index_url,
