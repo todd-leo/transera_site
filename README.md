@@ -1,6 +1,14 @@
 wagtail for transera site
 =========================
 
+## Test Data
+
+To add test data, run the following manage commands:
+
+```shell
+python manage.py seed_merchants --count 50
+```
+
 ## Build
 
 After model change, migration needs to be executed:
