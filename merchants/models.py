@@ -1,4 +1,7 @@
+
 from django.db import models
+from django.utils import timezone
+
 
 class Merchant(models.Model):
 
@@ -25,7 +28,7 @@ class Merchant(models.Model):
         CN = "cn", "中国大陆"
         HK = "hk", "中国香港"
 
-    id = models.CharField("商户编号", max_length=32, unique=True, db_index=True)
+    id = models.CharField("商户编号", max_length=32, primary_key=True, unique=True, db_index=True)
     name = models.CharField("商户名称", max_length=255, db_index=True)
     auth_type = models.CharField("认证类型", max_length=16, choices=AuthType.choices, default=AuthType.NONE)
     account = models.CharField("注册账号", max_length=128, help_text="邮箱或手机号")
@@ -33,14 +36,14 @@ class Merchant(models.Model):
     risk_level = models.CharField("风险等级", max_length=16, choices=RiskLevel.choices, default=RiskLevel.NA)
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.SET_NULL, related_name="children", verbose_name="所属上级")
     region = models.CharField("注册地区", max_length=64, choices=Region.choices)
-    register_time = models.DateTimeField("注册时间", auto_now_add=True)
+    register_time = models.DateTimeField("注册时间", auto_now_add=True, db_index=True)
     last_eval_time = models.DateTimeField("最近评估时间", null=True, blank=True)
     distributor = models.CharField("所属分销/渠道", max_length=64, blank=True)
 
     accounts_apply_limit = models.PositiveIntegerField("可申请账号数", default=0)
     accounts_applied = models.PositiveIntegerField("已申请账号数", default=0)
 
-    remark = models.TextField("备注", blank=True)
+    comments = models.TextField("备注", blank=True)
 
     class Meta:
         verbose_name = "商户"
