@@ -9,6 +9,11 @@ class Merchant(models.Model):
         PERSONAL = "personal", "个人认证"
         ENTERPRISE = "enterprise", "企业认证"
 
+    @property
+    def auth_type_display(self):
+        return self.get_auth_type_display()
+    auth_type_display.fget.short_description = "认证类型"
+
     # 商户状态
     class Status(models.TextChoices):
         ENABLED = "enabled", "活动"
@@ -16,15 +21,30 @@ class Merchant(models.Model):
         DELETED = "deleted", "注销"
         INACTIVE = "INACTIVE", "休眠"
 
+    @property
+    def status_display(self):
+        return self.get_status_display()
+    status_display.fget.short_description = "商户状态"
+
     class RiskLevel(models.TextChoices):
         LOW = "low", "低风险"
         MEDIUM = "medium", "中风险"
         HIGH = "high", "高风险"
         NA = "na", "暂无评估"
 
+    @property
+    def risk_level_display(self):
+        return self.get_risk_level_display()
+    risk_level_display.fget.short_description = "风险等级"
+
     class Region(models.TextChoices):
         CN = "cn", "中国大陆"
         HK = "hk", "中国香港"
+
+    @property
+    def region_display(self):
+        return self.get_region_display()
+    region_display.fget.short_description = "注册地区"
 
     id = models.CharField("商户编号", max_length=32, primary_key=True, unique=True, db_index=True)
     name = models.CharField("商户名称", max_length=255, db_index=True)
