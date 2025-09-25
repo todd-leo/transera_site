@@ -64,10 +64,15 @@ class Merchant(models.Model):
     def register_time_display(self):
         return fmt_dt(self.register_time)
 
+    register_time_display.short_description = "注册时间"
+
     last_eval_time = models.DateTimeField("最近评估时间", null=True, blank=True)
+
     @cached_property
     def last_eval_time_display(self):
         return fmt_dt(self.last_eval_time)
+
+    last_eval_time_display.short_description = "最近评估时间"
 
     distributor = models.CharField("所属分销/渠道", max_length=64, blank=True)
 

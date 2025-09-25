@@ -23,8 +23,6 @@ class MerchantViewSet(ModelViewSet):
         "register_time_display",
         "last_eval_time_display",
         "distributor",
-        "last_eval_time",
-        "distributor",
         "accounts_apply_limit",
         "accounts_applied",
         "utilization_rate",
