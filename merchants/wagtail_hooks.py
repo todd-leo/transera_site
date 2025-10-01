@@ -1,3 +1,4 @@
+from django.template.defaultfilters import urlencode
 from django.urls import reverse
 from django.utils.html import format_html
 from wagtail import hooks
@@ -29,6 +30,21 @@ class MerchantViewSet(ModelViewSet):
         "utilization_rate",
         "comments"
     ]
+
+    def _index_base_url(self):
+        # /admin/<app_label>/<model_name>/
+        meta = self.model._meta
+        return f"/admin/{meta.app_label}/{meta.model_name}/"
+
+    def auth_type_link(self, obj):
+        base = self._index_base_url()
+        params = {"auth_type": str(obj.auth_type)}
+        label = (
+            obj.get_auth_type_display()
+            if hasattr(obj, "get_auth_type_display")
+            else obj.auth_type
+        )
+        return format_html('<a href="{}?{}">{}</a>', base, urlencode(params), label)
 
     search_fields = ["name", "id", "account", "region", "parent__name", "parent__merchant_code"]
 
