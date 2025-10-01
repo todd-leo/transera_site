@@ -1,4 +1,7 @@
 from django.db import models
+from django.utils.functional import cached_property
+
+from utils.utils_time_formatting import fmt_dt
 
 
 class Merchant(models.Model):
@@ -54,8 +57,23 @@ class Merchant(models.Model):
     risk_level = models.CharField("风险等级", max_length=16, choices=RiskLevel.choices, default=RiskLevel.NA)
     parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.SET_NULL, related_name="children", verbose_name="所属上级")
     region = models.CharField("注册地区", max_length=64, choices=Region.choices)
-    register_time = models.DateTimeField("注册时间", auto_now_add=True, db_index=True)
+
+    register_time = models.DateTimeField( "注册时间", auto_now_add=True, db_index=True)
+
+    @cached_property
+    def register_time_display(self):
+        return fmt_dt(self.register_time)
+
+    register_time_display.short_description = "注册时间"
+
     last_eval_time = models.DateTimeField("最近评估时间", null=True, blank=True)
+
+    @cached_property
+    def last_eval_time_display(self):
+        return fmt_dt(self.last_eval_time)
+
+    last_eval_time_display.short_description = "最近评估时间"
+
     distributor = models.CharField("所属分销/渠道", max_length=64, blank=True)
 
     accounts_apply_limit = models.PositiveIntegerField("可申请账号数", default=0)

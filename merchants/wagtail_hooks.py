@@ -1,4 +1,5 @@
 from django.urls import reverse
+from django.utils.html import format_html
 from wagtail import hooks
 from wagtail.admin.menu import Menu, AdminOnlyMenuItem, SubmenuMenuItem
 from wagtail.admin.viewsets.model import ModelViewSet
@@ -19,10 +20,8 @@ class MerchantViewSet(ModelViewSet):
         "status_display",
         "risk_level_display",
         "parent",
-        "register_time",
-        "last_eval_time",
-        "distributor",
-        "last_eval_time",
+        "register_time_display",
+        "last_eval_time_display",
         "distributor",
         "accounts_apply_limit",
         "accounts_applied",
@@ -69,4 +68,11 @@ def register_merchant_manage_item():
         url=index_url,
         icon_name="user",
         order=120,  # 排序权重，数字越小越靠前
+    )
+
+@hooks.register("insert_global_admin_css")
+def add_horizontal_scroll_css():
+    return format_html(
+        '<link rel="stylesheet" href="{}">',
+        "/static/merchants/admin_overflow.css"
     )

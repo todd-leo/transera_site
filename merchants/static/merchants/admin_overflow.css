@@ -1,0 +1,19 @@
+/* 1) 外层容器负责横向滚动（列表页外层一般是 #listing-results） */
+#listing-results {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 2) 让表格按内容扩展，超出由外层滚动 */
+#listing-results > table.listing {
+  width: max-content;   /* 根据内容扩展 */
+  min-width: 100%;      /* 至少占满容器 */
+  table-layout: auto;   /* 让列宽由内容决定，保持 thead/tbody 对齐 */
+  white-space: nowrap;  /* 不换行，超出即滚动 */
+}
+
+/* 3) 可选：设置最小列宽，避免过窄 */
+#listing-results > table.listing th,
+#listing-results > table.listing td {
+  min-width: 120px;
+}

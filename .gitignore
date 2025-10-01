@@ -66,6 +66,7 @@ cache/
 tmp/
 django_cache/
 *.pid
+merchants/migrations/
 
 # ---- 前端（如用 Webpack/Parcel/Vite 等）----
 node_modules/
