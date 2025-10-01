@@ -6,6 +6,8 @@ wagtail for transera site
 To add test data, run the following manage commands:
 
 ```shell
+python manage.py seed_users --email qinfm@qq.com --password "P@ssw0rd" # add specific user
+python manage.py seed_users --count 50
 python manage.py seed_merchants --count 50
 ```
 
