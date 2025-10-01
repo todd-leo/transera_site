@@ -57,6 +57,8 @@ media_root/
 
 # 迁移（一般是需要提交的！若你有特殊流程再改）
 # migrations/  # 不要默认忽略迁移
+merchants/migrations/
+users/migrations/
 
 # Wagtail 搜索索引（如使用本地 Whoosh/临时索引）
 .whoosh/
@@ -66,7 +68,6 @@ cache/
 tmp/
 django_cache/
 *.pid
-merchants/migrations/
 
 # ---- 前端（如用 Webpack/Parcel/Vite 等）----
 node_modules/
