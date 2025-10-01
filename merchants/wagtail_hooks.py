@@ -32,7 +32,7 @@ def register_merchant_manage_item():
     return AdminOnlyMenuItem(
         label="商户管理",
         url=index_url,
-        icon_name="user",
+        icon_name="home",
         order=120  # 排序权重，数字越小越靠前
     )
 
