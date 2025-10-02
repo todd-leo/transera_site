@@ -56,7 +56,8 @@ media/
 media_root/
 
 # 迁移（一般是需要提交的！若你有特殊流程再改）
-# migrations/  # 不要默认忽略迁移
+migrations/  # 不要默认忽略迁移
+home/migrations/
 merchants/migrations/
 users/migrations/
 

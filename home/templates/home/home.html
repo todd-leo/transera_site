@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ page.seo_title|default:page.title }} | {{ request.site.site_name }}</title>
+  <meta name="description" content="{{ page.search_description }}">
+  <style>
+    :root{
+      --bg:#0a0f14;
+      --bg-2:#0c141c;
+      --card:#0f1720cc;
+      --text:#dbe7ff;
+      --muted:#9bb0c8;
+      --brand:#52E0A4;
+      --brand-2:#4AA3F5;
+      --danger:#ff6b6b;
+      --ring: 0 0 0 2px color-mix(in srgb, var(--brand) 40%, transparent);
+      --radius:18px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 0 1px rgba(255,255,255,.04) inset;
+      --glass: blur(10px) saturate(120%);
+      --grid: 1360px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:radial-gradient(1200px 800px at 80% -10%, #113a2f 0%, transparent 60%), radial-gradient(900px 600px at 10% 10%, #0b2a53 0%, transparent 60%), var(--bg); color:var(--text); font:16px/1.6 ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", Segoe UI, Roboto, Arial;}
+    a{color:var(--text); text-decoration:none}
+    .container {
+        max-width: var(--grid);
+        margin: 0 auto;         /* 居中 */
+        padding-left: 20px;     /* 窄屏的左右留白 */
+        padding-right: 20px;
+    }
+    header.nav{position:sticky; top:0; z-index:50; backdrop-filter:var(--glass); background:linear-gradient(180deg, rgba(10,15,20,.8), rgba(10,15,20,.4)); border-bottom:1px solid rgba(255,255,255,.06)}
+    .nav-inner{display:flex; align-items:center; justify-content:space-between; padding:14px 0;}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.3px}
+    .logo{
+        --size: 48px; /* 改这里控制尺寸：28/32/40/48... */
+        width: var(--size);
+        height: var(--size);
+        border-radius: calc(var(--size) * 0.18);
+        display:inline-block;
+        position:relative;
+        overflow:hidden;
+
+        /* 主渐变 + 轻微内阴影 + 发光 */
+        background:
+                radial-gradient(120% 120% at 80% 0%, rgba(255,255,255,.08) 0%, transparent 60%),
+                linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        box-shadow:
+                0 0 calc(var(--size)*0.6) color-mix(in srgb, var(--brand) 45%, transparent),
+                inset 0 2px calc(var(--size)*0.08) rgba(0,0,0,.20);
+    }
+
+    /* 右下“斜切切面” */
+    .logo::before{
+        content:"";
+        position:absolute; inset:0;
+        background:
+                linear-gradient(135deg,
+                transparent 0%,
+                transparent 56%,
+                rgba(0,0,0,.10) 56.5%,
+                rgba(0,0,0,.16) 100%);
+        mix-blend-mode: multiply; /* 深色背景更自然，如在浅色背景可去掉 */
+        pointer-events:none;
+    }
+
+    /* 小尺寸优化（可选）：添加 is-small 时更干净 */
+    .logo.is-small{
+        --size: 28px;
+        box-shadow:
+                0 0 calc(var(--size)*0.45) color-mix(in srgb, var(--brand) 40%, transparent),
+                inset 0 1px calc(var(--size)*0.06) rgba(0,0,0,.18);
+    }
+    .logo.is-small::after{
+        filter:none; opacity:.9;
+    }
+    .nav-actions{display:flex; gap:12px}
+    .btn{padding:10px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02); color:var(--text); transition:.2s; display:inline-flex; align-items:center; gap:8px}
+    .btn:hover{transform:translateY(-1px); border-color:rgba(255,255,255,.18)}
+    .btn.primary{background:linear-gradient(90deg, color-mix(in srgb, var(--brand) 50%, transparent), color-mix(in srgb, var(--brand-2) 45%, transparent)); border:0; box-shadow:0 8px 30px color-mix(in srgb, var(--brand) 25%, transparent)}
+    .hero{position:relative; padding:72px 0 40px}
+    .hero-grid{display:grid; grid-template-columns:3fr 2fr; gap:36px}
+    .kicker{color:var(--brand); font-weight:600; letter-spacing:.4px}
+    .title{font-size:clamp(28px, 4.2vw, 52px); line-height:1.1; margin:.4em 0 .3em; font-weight:800}
+    .subtitle{color:var(--muted); font-size:clamp(14px, 1.6vw, 18px)}
+    .hero-cta{display:flex; gap:12px; margin-top:22px; flex-wrap:wrap}
+    .hero-card{border-radius:var(--radius); background:linear-gradient(180deg, rgba(18,25,34,.85), rgba(15,23,32,.6)); padding:22px; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.06)}
+    .stat{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px}
+    .stat .box{padding:16px; border-radius:14px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06)}
+    .stat .num{font-size:22px; font-weight:800}
+    .glow{position:absolute; inset:-60px -60px auto auto; width:360px; height:360px; background:radial-gradient(closest-side, color-mix(in srgb, var(--brand) 30%, transparent), transparent 70%); filter:blur(20px); opacity:.7; pointer-events:none}
+    .grid{display:grid; grid-template-columns:repeat(12,1fr); gap:18px; margin:42px 0}
+    .card{grid-column:span 4; border-radius:16px; background:var(--card); padding:22px; border:1px solid rgba(255,255,255,.06); box-shadow:var(--shadow)}
+    .card h3{margin:0 0 6px; font-size:18px}
+    .card p{margin:0; color:var(--muted)}
+    .badge{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:999px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); font-size:13px}
+    .dot{width:8px; height:8px; border-radius:50%; background:conic-gradient(from 260deg, var(--brand), var(--brand-2)); box-shadow:0 0 16px var(--brand)}
+    .pricing{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+    .price-card{border-radius:16px; padding:22px; background:linear-gradient(180deg, rgba(18,25,34,.85), rgba(15,23,32,.6)); border:1px solid rgba(255,255,255,.06); box-shadow:var(--shadow)}
+    .price{font-size:34px; font-weight:800}
+    footer{border-top:1px solid rgba(255,255,255,.06); margin-top:56px; padding:24px 0; color:var(--muted); font-size:14px}
+    /* Responsive */
+    @media (min-width: 1600px){
+        :root { --grid: 1440px; }
+        .grid .card{grid-column:span 12}
+        .pricing{grid-template-columns:1fr}
+    }
+    @media (max-width: 380px){
+        .container { padding-left: 14px; padding-right: 14px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="container nav-inner">
+      <div class="brand">
+          <span class="logo" aria-hidden="true"></span>
+          <span>{{ page.get_site.site_name|default:"Transera" }}</span>
+      </div>
+      <div class="nav-actions">
+        <a class="btn" href="#features">功能</a>
+        <a class="btn" href="#pricing">价格</a>
+        <a class="btn primary" href="{{ page.cta_primary_url|default:'#' }}">{{ page.cta_primary_text|default:"立即开始" }}</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="container hero">
+      <span class="glow"></span>
+      <div class="hero-grid">
+        <div>
+          <div class="kicker">{{ page.hero_kicker|default:"主标题.顶部字条" }}</div>
+          <h1 class="title">{{ page.hero_title|default:"主标题" }}</h1>
+          <p class="subtitle">{{ page.hero_subtitle|default:"主标题.下部字条" }}</p>
+          <div class="hero-cta">
+            <a class="btn primary" href="{{ page.cta_primary_url|default:'#' }}">{{ page.cta_primary_text|default:"创建账户" }}</a>
+            <a class="btn" href="{{ page.cta_secondary_url|default:'#features' }}">{{ page.cta_secondary_text|default:"查看策略" }}</a>
+            <span class="badge"><span class="dot"></span>{{ page.cta_badge | default:'CTA 标签'}}</span>
+          </div>
+          <div class="stat">
+            <div class="box">
+              <div class="num">{{ page.stat_exp|default:"7年" }}</div>
+              <div class="label">跨境服务经验</div>
+            </div>
+            <div class="box">
+              <div class="num">{{ page.stat_flow|default:"$24.7M" }}</div>
+              <div class="label">平台资金吞吐</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-card">
+          <canvas id="area" height="170"></canvas>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
+            <div class="box" style="padding:14px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06)">
+              <div style="font-weight:700">风险控制</div>
+              <div style="color:var(--muted); font-size:14px">多策略分散 + 动态止损</div>
+            </div>
+            <div class="box" style="padding:14px; border-radius:12px; background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06)">
+              <div style="font-weight:700">自动复利</div>
+              <div style="color:var(--muted); font-size:14px">收益自动滚存提效</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="container grid">
+      <article class="card">
+        <h3>一键质押</h3>
+        <p>主流链与资产一站式接入，透明手续费。</p>
+      </article>
+      <article class="card">
+        <h3>智能再平衡</h3>
+        <p>根据波动率自适应调整仓位，平滑回撤。</p>
+      </article>
+      <article class="card">
+        <h3>实时洞察</h3>
+        <p>收益曲线与风险指标可视化，支持导出。</p>
+      </article>
+    </section>
+
+    <section id="pricing" class="container pricing">
+      <div class="price-card">
+        <div class="badge"><span class="dot"></span> 基础</div>
+        <div class="price">0%</div>
+        <p class="subtitle">入门试用，无最低额度</p>
+        <a class="btn" href="#">开始试用</a>
+      </div>
+      <div class="price-card" style="outline: var(--ring);">
+        <div class="badge"><span class="dot"></span> 专业</div>
+        <div class="price">1.0%</div>
+        <p class="subtitle">更低费用与优先额度</p>
+        <a class="btn primary" href="#">立即升级</a>
+      </div>
+      <div class="price-card">
+        <div class="badge"><span class="dot"></span> 机构</div>
+        <div class="price">定制</div>
+        <p class="subtitle">专属策略与 API</p>
+        <a class="btn" href="#">联系销售</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container" style="display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap;">
+        <div>© {% now "Y" %} {{ page.get_site.site_name|default:"Transera" }}</div>
+      <div>风险提示：加密资产波动较大，请谨慎投资。</div>
+    </div>
+  </footer>
+
+  <script>
+    (function(){
+      const el = document.getElementById('area');
+      if(!el) return;
+      const ctx = el.getContext('2d');
+      const w = el.width = el.clientWidth * (window.devicePixelRatio||1);
+      const h = el.height = 170 * (window.devicePixelRatio||1);
+      const n = 48;
+      const data = Array.from({length:n}, (_,i)=> {
+        const t=i/(n-1); return 0.55 + 0.35*Math.sin(t*3.2) + 0.08*Math.cos(t*7) + (Math.random()-0.5)*0.06;
+      });
+      const x = i => i*(w/(n-1)); const y = v => h - v*h*0.9;
+      // gradient
+      const g = ctx.createLinearGradient(0,0,0,h);
+      g.addColorStop(0,'rgba(102,225,169,.55)');
+      g.addColorStop(1,'rgba(102,225,169,0)');
+      ctx.beginPath(); ctx.moveTo(0,h);
+      data.forEach((v,i)=> ctx.lineTo(x(i), y(v)));
+      ctx.lineTo(w,h); ctx.closePath(); ctx.fillStyle=g; ctx.fill();
+      // line
+      ctx.beginPath();
+      data.forEach((v,i)=> i?ctx.lineTo(x(i), y(v)):ctx.moveTo(x(i), y(v)));
+      ctx.lineWidth = 2*(window.devicePixelRatio||1);
+      ctx.strokeStyle = '#66e1a9';
+      ctx.shadowColor = '#66e1a9'; ctx.shadowBlur = 12;
+      ctx.stroke();
+    })();
+  </script>
+</body>
+</html>
