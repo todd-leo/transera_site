@@ -12,8 +12,8 @@
       --card:#0f1720cc;
       --text:#dbe7ff;
       --muted:#9bb0c8;
-      --brand:#66e1a9; /* 绿色霓虹 */
-      --brand-2:#5aa8ff; /* 蓝色霓虹 */
+      --brand:#52E0A4;
+      --brand-2:#4AA3F5;
       --danger:#ff6b6b;
       --ring: 0 0 0 2px color-mix(in srgb, var(--brand) 40%, transparent);
       --radius:18px;
@@ -33,7 +33,48 @@
     header.nav{position:sticky; top:0; z-index:50; backdrop-filter:var(--glass); background:linear-gradient(180deg, rgba(10,15,20,.8), rgba(10,15,20,.4)); border-bottom:1px solid rgba(255,255,255,.06)}
     .nav-inner{display:flex; align-items:center; justify-content:space-between; padding:14px 0;}
     .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.3px}
-    .logo{width:28px; height:28px; border-radius:8px; background:conic-gradient(from 210deg, var(--brand), var(--brand-2)); box-shadow:0 0 30px color-mix(in srgb, var(--brand) 50%, transparent)}
+    .logo{
+        --size: 48px; /* 改这里控制尺寸：28/32/40/48... */
+        width: var(--size);
+        height: var(--size);
+        border-radius: calc(var(--size) * 0.18);
+        display:inline-block;
+        position:relative;
+        overflow:hidden;
+
+        /* 主渐变 + 轻微内阴影 + 发光 */
+        background:
+                radial-gradient(120% 120% at 80% 0%, rgba(255,255,255,.08) 0%, transparent 60%),
+                linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
+        box-shadow:
+                0 0 calc(var(--size)*0.6) color-mix(in srgb, var(--brand) 45%, transparent),
+                inset 0 2px calc(var(--size)*0.08) rgba(0,0,0,.20);
+    }
+
+    /* 右下“斜切切面” */
+    .logo::before{
+        content:"";
+        position:absolute; inset:0;
+        background:
+                linear-gradient(135deg,
+                transparent 0%,
+                transparent 56%,
+                rgba(0,0,0,.10) 56.5%,
+                rgba(0,0,0,.16) 100%);
+        mix-blend-mode: multiply; /* 深色背景更自然，如在浅色背景可去掉 */
+        pointer-events:none;
+    }
+
+    /* 小尺寸优化（可选）：添加 is-small 时更干净 */
+    .logo.is-small{
+        --size: 28px;
+        box-shadow:
+                0 0 calc(var(--size)*0.45) color-mix(in srgb, var(--brand) 40%, transparent),
+                inset 0 1px calc(var(--size)*0.06) rgba(0,0,0,.18);
+    }
+    .logo.is-small::after{
+        filter:none; opacity:.9;
+    }
     .nav-actions{display:flex; gap:12px}
     .btn{padding:10px 16px; border-radius:12px; border:1px solid rgba(255,255,255,.08); background:rgba(255,255,255,.02); color:var(--text); transition:.2s; display:inline-flex; align-items:center; gap:8px}
     .btn:hover{transform:translateY(-1px); border-color:rgba(255,255,255,.18)}
@@ -74,8 +115,8 @@
   <header class="nav">
     <div class="container nav-inner">
       <div class="brand">
-        <span class="logo"></span>
-        <span>{{ page.get_site.site_name|default:"Transera" }}</span>
+          <span class="logo" aria-hidden="true"></span>
+          <span>{{ page.get_site.site_name|default:"Transera" }}</span>
       </div>
       <div class="nav-actions">
         <a class="btn" href="#features">功能</a>
