@@ -5,7 +5,8 @@ from merchants.models import Merchant
 
 class MerchantViewSet(ModelViewSet):
     model = Merchant
-    icon = "user"
+    icon = "home"
+    menu_label = "商户管理"
     add_to_admin_menu = False
 
     list_display = [
